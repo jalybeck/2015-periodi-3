@@ -1,0 +1,5 @@
+a - add starting point
+l - add goal point
+
+left mouse button - add blocked cell
+right mouse button - remove blocked cell
