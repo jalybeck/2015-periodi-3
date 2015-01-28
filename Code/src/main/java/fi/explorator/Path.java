@@ -24,6 +24,14 @@ public class Path {
     }
 
     /**
+     * Get list of cells which represents this path.
+     * @return ArrayList of the cells representing path in correct order.
+     */
+    public List<Cell> getCells() {
+        return this.path;
+    }
+
+    /**
      * String representation of the Path.
      * @return String object which consist of all the cells
      */

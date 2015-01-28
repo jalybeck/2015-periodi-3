@@ -8,10 +8,18 @@ package fi.explorator;
  */
 
 public abstract class PathFinder {
+    /**
+     * This constant represents infinity.
+     */
+    protected final int MAX_NUM = 10000000;
 
     protected Grid grid;
     protected Cell start;
     protected Cell goal;
+    protected int passableWeight;
+    protected int blockedWeight;
+    protected boolean pathFound;
+    protected int numVertices;
 
     protected PathFinder() {
 
@@ -27,9 +35,15 @@ public abstract class PathFinder {
      */
     public static PathFinder createPathFinder(PathFinderType type, Grid grid, Cell start, Cell goal) {
         PathFinder pf = null;
+
         switch (type) {
         case FLOYD_WARSHALL:
+
             pf = new FloydWarshall();
+            break;
+        case DIJKSTRA:
+            pf = new Dijkstra();
+            break;
         }
 
         if (pf != null) {
@@ -55,6 +69,8 @@ public abstract class PathFinder {
      */
     public abstract boolean pathFound();
 
+    public abstract void resetPathFound();
+
     /**
      * Get result path from PathFinder
      * @return  Path object which represents found path from start cell to goal cell.
@@ -67,6 +83,7 @@ public abstract class PathFinder {
      */
     public void setGrid(Grid grid) {
         this.grid = grid;
+        this.numVertices = grid.getCells().size();
     }
 
     /**
@@ -107,5 +124,30 @@ public abstract class PathFinder {
      */
     public Cell getGoal() {
         return goal;
+    }
+
+    public void setBlockedWeight(int maxwWeight) {
+        this.blockedWeight = maxwWeight;
+    }
+
+    public int getBlockedWeight() {
+        return blockedWeight;
+    }
+
+    /**
+     * Set passable weight of the cell.
+     * This function iterates all the cells in grid and adds weight as a value to it.
+     * @param passableWeight
+     */
+    public void setPassableWeight(int passableWeight) {
+        this.passableWeight = passableWeight;
+
+        for (Cell c : grid.getCells()) {
+            c.setValue(passableWeight);
+        }
+    }
+
+    public int getPassableWeight() {
+        return passableWeight;
     }
 }

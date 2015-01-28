@@ -6,14 +6,6 @@ package fi.explorator;
  */
 class FloydWarshall extends PathFinder {
     /**
-     * This constant represents infinity.
-     */
-    private final int MAX_NUM = 1000000;
-
-    private boolean pathFound;
-    private int numVertices;
-
-    /**
      * 2D weight matrix
      */
     private int[][] D;
@@ -30,28 +22,9 @@ class FloydWarshall extends PathFinder {
     @Override
     public void setGrid(Grid g) {
         super.setGrid(g);
-
-        this.numVertices = g.getCells().size();
+        
         D = new int[this.numVertices][this.numVertices];
         path = new int[this.numVertices][this.numVertices];
-
-        //Initialize weight matrix
-        for (int i = 0; i < this.numVertices; i++) {
-            for (int j = 0; j < this.numVertices; j++) {
-                path[i][j] = j;
-                if (i == j)
-                    D[i][j] = 0;
-                else
-                    D[i][j] = MAX_NUM;
-            }
-        }
-
-        //Populate weight matrix with edge weights
-        for (Edge e : g.getEdges()) {
-            Cell start = e.getCellStart();
-            Cell end = e.getCellEnd();
-            D[start.getOrderNumber()][end.getOrderNumber()] = e.getWeight();
-        }
 
     }
 
@@ -64,6 +37,28 @@ class FloydWarshall extends PathFinder {
      */
     @Override
     public void findPathStep() {
+        
+        //Initialize weight matrix
+        for (int i = 0; i < this.numVertices; i++) {
+            for (int j = 0; j < this.numVertices; j++) {
+                path[i][j] = j;
+                if (i == j)
+                    D[i][j] = 0;
+                else
+                    D[i][j] = MAX_NUM;
+            }
+        }
+
+        //Populate weight matrix with edge weights
+        for (Edge e : grid.getEdges()) {
+            Cell start = e.getCellStart();
+            Cell end = e.getCellEnd();
+            if(start.getValue() == blockedWeight || end.getValue() == blockedWeight)
+                continue;
+            D[start.getOrderNumber()][end.getOrderNumber()] = e.getWeight();
+            D[end.getOrderNumber()][start.getOrderNumber()] = e.getWeight();
+        }
+        
         for (int k = 0; k < this.numVertices; k++) {
             for (int i = 0; i < this.numVertices; i++) {
                 for (int j = 0; j < this.numVertices; j++) {
@@ -89,12 +84,10 @@ class FloydWarshall extends PathFinder {
      */
     @Override
     public Path getPath() {
-        /*
-         * TODO: Finish this method!!
-         */
+        if(start == null || goal == null)
+            return null;
         if (path[start.getOrderNumber()][goal.getOrderNumber()] == MAX_NUM)
             return null;
-        //String sPath = String.valueOf(u+1);
 
         Path p = new Path();
 
@@ -102,11 +95,10 @@ class FloydWarshall extends PathFinder {
         int v = goal.getOrderNumber();
         while (u != v) {
             u = path[u][v];
-            //p.add(grid.getCell()
-            //sPath +="->"+(u+1);
+            p.add(grid.getCell(u));
         }
 
-        return null;
+        return p;
     }
 
     public void printWeightMatrix() {
@@ -129,11 +121,21 @@ class FloydWarshall extends PathFinder {
     public static void main(String[] args) throws InterruptedException {
         Grid grid = new Grid(4, 4);
         Cell start = new Cell(0, 0, 0);
-        Cell goal = new Cell(9, 9, 0);
+        Cell goal = new Cell(2, 1, 1+2 *grid.getNumColumns() );
         PathFinder pf = PathFinder.createPathFinder(PathFinderType.FLOYD_WARSHALL, grid, start, goal);
+        ((FloydWarshall)pf).printWeightMatrix();
+        System.out.println();
         while (!pf.pathFound()) {
             pf.findPathStep();
         }
         ((FloydWarshall)pf).printWeightMatrix();
+        
+        System.out.println("Path from "+start+" to "+goal+":");
+        System.out.println(pf.getPath());
+    }
+
+    @Override
+    public void resetPathFound() {
+        this.pathFound = false;
     }
 }

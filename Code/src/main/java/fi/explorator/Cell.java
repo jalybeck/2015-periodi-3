@@ -1,11 +1,16 @@
 package fi.explorator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents single cell in 2D grid.
  */
 public class Cell {
     private int x, y;
-
+    
+    private List<Edge> edgeList;
+    
     /**
      * This is identifier of the cell.
      * Number 0 would be cell at left-top corner,
@@ -22,8 +27,11 @@ public class Cell {
         this.y = y;
         this.x = x;
         this.orderNumber = orderNumber;
+        this.edgeList = new ArrayList<Edge>();
+        value = 1;
     }
-
+    
+    
     /**
      * Get x-coordinate of the cell.
      * @return positive integer
@@ -45,7 +53,7 @@ public class Cell {
      * @return String which consists x and y coordinates of the cell
      */
     public String toString() {
-        return "(" + x + "," + y + ")";
+        return "(" + y + "," + x + ","+orderNumber+")";
     }
 
     /**
@@ -56,6 +64,8 @@ public class Cell {
      */
     public void setValue(int value) {
         this.value = value;
+        for(Edge e : edgeList)
+            e.setWeight(value);
     }
 
     /**
@@ -72,6 +82,14 @@ public class Cell {
      */
     public int getOrderNumber() {
         return this.orderNumber;
+    }
+    
+    public void addEdge(Edge e) {
+        this.edgeList.add(e);
+    }
+    
+    public List<Edge> getEdges() {
+        return this.edgeList;
     }
 
 }

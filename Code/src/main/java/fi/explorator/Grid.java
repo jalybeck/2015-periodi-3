@@ -5,7 +5,9 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2D grid which represents the area where the starting point and ending point of the path resides.
@@ -17,12 +19,14 @@ public class Grid {
     private Cell[][] g;
     private List<Edge> edgeList;
 
+    private Map<Integer, Cell> cellCache;
+
     public Grid(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         this.edgeList = new ArrayList<Edge>();
-
-        g = new Cell[rows][cols];
+        this.cellCache = new HashMap<Integer, Cell>();
+        this.g = new Cell[rows][cols];
 
         //Construct grid and edgelist
         //Add horizontal edges of grid
@@ -30,9 +34,15 @@ public class Grid {
         for (int y = 0; y < rows; y++) {
             prevCell1 = null;
             for (int x = 0; x < cols; x++) {
-                g[y][x] = new Cell(y, x, x + y * cols);
-                if (prevCell1 != null)
-                    edgeList.add(new Edge(prevCell1, g[y][x], 1));
+                int orderNumber = x + y * cols;
+                g[y][x] = new Cell(y, x, orderNumber);
+                cellCache.put(orderNumber, g[y][x]);
+                if (prevCell1 != null) {
+                    Edge e = new Edge(prevCell1, g[y][x], 1);
+                    edgeList.add(e);
+                    prevCell1.addEdge(e);
+                    g[y][x].addEdge(e);
+                }
                 prevCell1 = g[y][x];
             }
         }
@@ -41,8 +51,12 @@ public class Grid {
         for (int x = 0; x < cols; x++) {
             prevCell1 = null;
             for (int y = 0; y < rows; y++) {
-                if (prevCell1 != null)
-                    edgeList.add(new Edge(prevCell1, g[y][x], 1));
+                if (prevCell1 != null) {
+                    Edge e = new Edge(prevCell1, g[y][x], 1);
+                    edgeList.add(e);
+                    prevCell1.addEdge(e);
+                    g[y][x].addEdge(e);
+                }
 
                 prevCell1 = g[y][x];
             }
@@ -67,17 +81,13 @@ public class Grid {
         return g[y][x];
     }
 
-    /*
-     * TODO: Finish this
-     */
-
     /**
      * Get the cell represented by its orderNumber
      * @param orderNumber number of the cell
      * @return Cell object
      */
     public Cell getCell(int orderNumber) {
-        return null;
+        return cellCache.get(orderNumber);
     }
 
     /**
@@ -160,9 +170,17 @@ public class Grid {
             System.out.println((i++) + ": " + e);
         }
 
+        i = 1;
         System.out.println("Cells");
         for (Cell c : g.getCells()) {
+            System.out.println((i++) + ": " + c);
+        }
 
+        i = 1;
+        Cell c = g.getCell(1, 0);
+        System.out.println("Edges from cell " + c);
+        for (Edge e : c.getEdges()) {
+            System.out.println((i++) + ": " + e);
         }
     }
 }
