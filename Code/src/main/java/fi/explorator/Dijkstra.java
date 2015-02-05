@@ -35,6 +35,8 @@ public class Dijkstra extends PathFinder {
      */
     @Override
     public void findPathStep() {
+        if(pathFound) return;
+        
         for (int i = 0; i < dist.length; i++) {
             dist[i] = MAX_NUM;
             visited[i] = false;
@@ -44,8 +46,13 @@ public class Dijkstra extends PathFinder {
 
         for (int i = 0; i < dist.length; i++) {
             int next = smallestCell();
+            
+            //Lets guard for indexoutofbounds exceptions
+            if(next < 0) continue;
+            
             visited[next] = true;
-
+            //if(grid.getCell(next).getValue() == blockedWeight) continue;
+            
             List<Cell> adj = getAdjacentCells(grid.getCell(next));
             for (Cell c : adj) {
                 int n = c.getOrderNumber();
@@ -60,27 +67,7 @@ public class Dijkstra extends PathFinder {
         pathFound = true;
     }
 
-    /**
-     * Get adjacent cells of the given cell parameter.
-     * @param c Cell object which adjacent cells we want to be returned
-     * @return ArrayList of adjacent cells
-     */
-    private List<Cell> getAdjacentCells(Cell c) {
-        List<Cell> adj = new ArrayList<Cell>();
-
-        for (Edge e : c.getEdges()) {
-            if (c.getOrderNumber() != e.getCellStart().getOrderNumber()) {
-                Cell cs = e.getCellStart();
-                adj.add(cs);
-            } else if (c.getOrderNumber() != e.getCellEnd().getOrderNumber()) {
-                Cell ce = e.getCellEnd();
-                adj.add(ce);
-            }
-
-        }
-
-        return adj;
-    }
+ 
 
     /**
      * Find smallest cell distance, which we have not visited yet.
@@ -119,7 +106,7 @@ public class Dijkstra extends PathFinder {
     public Path getPath() {
         if (start == null || goal == null)
             return null;
-        if (path[goal.getOrderNumber()] == MAX_NUM)
+        if (path[goal.getOrderNumber()] == MAX_NUM || path[goal.getOrderNumber()] == 0)
             return null;
 
         Path p = new Path();

@@ -1,5 +1,8 @@
 package fi.explorator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Abstract base class which all path finding algorithms will be extending from.
  * This base class also works as Factory class for PathFinder type of classes.
@@ -38,11 +41,13 @@ public abstract class PathFinder {
 
         switch (type) {
         case FLOYD_WARSHALL:
-
             pf = new FloydWarshall();
             break;
         case DIJKSTRA:
             pf = new Dijkstra();
+            break;
+        case A_STAR:
+            pf = new AStar();
             break;
         }
 
@@ -149,5 +154,32 @@ public abstract class PathFinder {
 
     public int getPassableWeight() {
         return passableWeight;
+    }
+    
+    /**
+     * Get adjacent cells of the given cell parameter.
+     * Cells with value of blockedWeight will be not traversed.
+     * @param c Cell object which adjacent cells we want to be returned
+     * @return ArrayList of adjacent cells
+     */
+    protected List<Cell> getAdjacentCells(Cell c) {
+        List<Cell> adj = new ArrayList<Cell>();
+
+        for (Edge e : c.getEdges()) {
+            if(e.getWeight() == blockedWeight)
+                continue;
+            
+            Cell cs = e.getCellStart();
+            Cell ce = e.getCellEnd();
+
+            if (c.getOrderNumber() != cs.getOrderNumber()) {
+                adj.add(cs);
+            } else if (c.getOrderNumber() != ce.getOrderNumber()) {
+                adj.add(ce);
+            }
+
+        }
+
+        return adj;
     }
 }

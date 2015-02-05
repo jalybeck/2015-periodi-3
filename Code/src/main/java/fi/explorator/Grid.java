@@ -11,6 +11,9 @@ import java.util.Map;
 
 /**
  * 2D grid which represents the area where the starting point and ending point of the path resides.
+ * Grid cells are being numbered starting from zero at top-left corner and raising up by one when going right.
+ * This number is being used to identify the cell in the grid.
+ * 
  * This is the main composite object which holds the Cell and Edge instances.
  * This works as data transfer object between visualization layer and path finding algorithms.
  */

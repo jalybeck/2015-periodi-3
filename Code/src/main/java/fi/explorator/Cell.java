@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Represents single cell in 2D grid.
  */
-public class Cell {
+public class Cell implements Comparable<Cell> {
     private int x, y;
     
     private List<Edge> edgeList;
@@ -50,7 +50,7 @@ public class Cell {
 
     /**
      * String representation of the Cell object.
-     * @return String which consists x and y coordinates of the cell
+     * @return String which consists y and x coordinates of the cell
      */
     public String toString() {
         return "(" + y + "," + x + ","+orderNumber+")";
@@ -84,13 +84,31 @@ public class Cell {
         return this.orderNumber;
     }
     
+    /**
+     * Add edge to current cell.
+     * @param e Edge to be added
+     */
     public void addEdge(Edge e) {
         this.edgeList.add(e);
     }
     
+    /**
+     * Get list of edges connected to current cell.
+     * @return List of edges
+     */
     public List<Edge> getEdges() {
         return this.edgeList;
     }
-
+    
+    /**
+     * From Comparable interface.
+     * This will be used to cell to cell compare operations.
+     * @param o Cell to be compared against.
+     * @return negative, zero, or positive integer depending how this cell compares to cell given as parameter
+     */
+    @Override
+    public int compareTo(Cell o) {
+        return value - o.value;
+    }
 }
 
