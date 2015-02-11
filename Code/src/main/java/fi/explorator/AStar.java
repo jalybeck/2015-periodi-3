@@ -1,7 +1,11 @@
 package fi.explorator;
 
+import fi.explorator.datastructures.ArrayList;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 /**
  * A* pathfinding algorithm implementation.
@@ -11,7 +15,6 @@ import java.util.PriorityQueue;
  * 
  */
 public class AStar extends PathFinder {
-    private boolean pathFound;
     /**
      * Keeps track of cost of the path.
      */
@@ -28,27 +31,37 @@ public class AStar extends PathFinder {
     @Override
     public void setGrid(Grid g) {
         super.setGrid(g);
-        cost = new int[this.numVertices];
-        totCost = new int[this.numVertices];        
-        path = new int[this.numVertices];
+
     }
     
     @Override
     public void findPathStep() {
+        if(goal == null || start == null)
+            return;
         PriorityQueue<Cell> open = new PriorityQueue<Cell>();
-        HashMap<Integer, Cell> closed = new HashMap<Integer, Cell>();
+        //List<Cell> open = new ArrayList<Cell>();
+        
+        List<Integer> openList = new ArrayList<Integer>();
+        List<Integer> closed = new ArrayList<Integer>();
+        
+        cost = new int[this.numVertices];
+        totCost = new int[this.numVertices];        
+        path = new int[this.numVertices];
         
         cost[start.getOrderNumber()] = 0;
         totCost[start.getOrderNumber()] = heuristicFunction(start);
         path[start.getOrderNumber()] = start.getOrderNumber();
         
-        open.add(start);
+        Cell startCopy = new Cell(start);
+        startCopy.setValue(totCost[start.getOrderNumber()]);
+        open.add(startCopy);
+        openList.add(startCopy.getOrderNumber());
         
         while(!open.isEmpty()) {
-            Cell current = open.poll();
-            
-            closed.put(current.getOrderNumber(),current);
-            
+            Cell current = open.remove();
+
+            closed.add(current.getOrderNumber());
+
             if(current.getOrderNumber() == goal.getOrderNumber()) {
                 pathFound = true;
                 return;
@@ -56,31 +69,41 @@ public class AStar extends PathFinder {
             
             List<Cell> adj = getAdjacentCells(grid.getCell(current.getOrderNumber()));
             for (Cell c : adj) {
-                if(closed.containsKey(c.getOrderNumber()))
+                if(isInList(closed,c.getOrderNumber()))
                     continue;
                 
                 int newCost = cost[current.getOrderNumber()] + c.getValue();
-                if(!open.contains(c) || newCost < cost[c.getOrderNumber()]) {
+                boolean inOpenList = isInList(openList,c.getOrderNumber());
+                if(!inOpenList || newCost < cost[c.getOrderNumber()]) {
                     path[c.getOrderNumber()] = current.getOrderNumber();
                     cost[c.getOrderNumber()] = newCost;
                     totCost[c.getOrderNumber()] = cost[c.getOrderNumber()] + heuristicFunction(c);
-                    if(!open.contains(c))
-                        open.offer(c);
+                    
+                    if(!inOpenList) {
+                        Cell cellCopy = new Cell(c);
+                        cellCopy.setValue(totCost[c.getOrderNumber()]);
+                        open.add(cellCopy);
+                        openList.add(cellCopy.getOrderNumber());
+                        //Collections.sort(open);
+                    }
                 }
             }
         }
+        
+        //Eventho path might not actually be found, we stop iterating in main loop.
+        pathFound = true;
     }
-
-    @Override
-    public boolean pathFound() {
-        return pathFound;
+    
+    private boolean isInList(List<Integer> list, int orderNumber) {
+        for(Integer i : list) {
+            if(i == orderNumber) {
+                return true;
+            }
+        }
+        
+        return false;
     }
-
-    @Override
-    public void resetPathFound() {
-        pathFound = false;
-    }
-
+    
     /**
      * Construct Path object from start cell to goal cell, by iterating over path array, where
      * we gather path in findPathStep() method.
@@ -103,6 +126,7 @@ public class AStar extends PathFinder {
         }
         
         return p;
+
     }
     
     /**

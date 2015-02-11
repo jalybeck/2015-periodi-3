@@ -1,6 +1,5 @@
 package fi.explorator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
  * so this might run little bit slower than the version which does use that.
  */
 public class Dijkstra extends PathFinder {
-    private boolean pathFound;
     private int dist[];
     private int path[];
     private boolean visited[];
@@ -35,7 +33,8 @@ public class Dijkstra extends PathFinder {
      */
     @Override
     public void findPathStep() {
-        if(pathFound) return;
+        if(goal == null || start == null)
+            return;
         
         for (int i = 0; i < dist.length; i++) {
             dist[i] = MAX_NUM;
@@ -51,7 +50,6 @@ public class Dijkstra extends PathFinder {
             if(next < 0) continue;
             
             visited[next] = true;
-            //if(grid.getCell(next).getValue() == blockedWeight) continue;
             
             List<Cell> adj = getAdjacentCells(grid.getCell(next));
             for (Cell c : adj) {
@@ -66,8 +64,6 @@ public class Dijkstra extends PathFinder {
         }
         pathFound = true;
     }
-
- 
 
     /**
      * Find smallest cell distance, which we have not visited yet.
@@ -86,17 +82,7 @@ public class Dijkstra extends PathFinder {
         }
         return cellIndex;
     }
-
-    @Override
-    public boolean pathFound() {
-        return pathFound;
-    }
-
-    @Override
-    public void resetPathFound() {
-        pathFound = false;
-    }
-
+    
     /**
      * Construct Path object from start cell to goal cell, by iterating over path array, where
      * we gather path in findPathStep() method.

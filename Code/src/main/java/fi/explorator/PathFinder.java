@@ -1,6 +1,7 @@
 package fi.explorator;
 
-import java.util.ArrayList;
+import fi.explorator.datastructures.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,9 +22,10 @@ public abstract class PathFinder {
     protected Cell goal;
     protected int passableWeight;
     protected int blockedWeight;
-    protected boolean pathFound;
     protected int numVertices;
-
+    protected boolean pathFound;
+    
+    
     protected PathFinder() {
 
     }
@@ -72,9 +74,13 @@ public abstract class PathFinder {
      * This should be called in loop to determine when the path is found.
      * @return true/false depending if the path is found between start and goal cells.
      */
-    public abstract boolean pathFound();
+    public boolean pathFound() {
+        return pathFound;
+    }
 
-    public abstract void resetPathFound();
+    public void resetPathFound() {
+        pathFound = false;
+    }
 
     /**
      * Get result path from PathFinder
@@ -166,15 +172,13 @@ public abstract class PathFinder {
         List<Cell> adj = new ArrayList<Cell>();
 
         for (Edge e : c.getEdges()) {
-            if(e.getWeight() == blockedWeight)
-                continue;
             
             Cell cs = e.getCellStart();
             Cell ce = e.getCellEnd();
 
-            if (c.getOrderNumber() != cs.getOrderNumber()) {
+            if (c.getOrderNumber() != cs.getOrderNumber() && cs.getValue() != blockedWeight) {
                 adj.add(cs);
-            } else if (c.getOrderNumber() != ce.getOrderNumber()) {
+            } else if (c.getOrderNumber() != ce.getOrderNumber() && ce.getValue() != blockedWeight) {
                 adj.add(ce);
             }
 
@@ -182,4 +186,5 @@ public abstract class PathFinder {
 
         return adj;
     }
+    
 }

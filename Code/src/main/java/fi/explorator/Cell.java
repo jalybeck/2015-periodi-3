@@ -1,6 +1,7 @@
 package fi.explorator;
 
-import java.util.ArrayList;
+import fi.explorator.datastructures.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,18 @@ public class Cell implements Comparable<Cell> {
         value = 1;
     }
     
+    /**
+     * Copy construct.
+     * 
+     * @param cell
+     */
+    public Cell(Cell cell) {
+       this.y = cell.y;
+       this.x = cell.x;
+       this.orderNumber = cell.orderNumber;
+       this.edgeList = cell.edgeList;
+       this.value = cell.value;
+    }
     
     /**
      * Get x-coordinate of the cell.
@@ -110,5 +123,6 @@ public class Cell implements Comparable<Cell> {
     public int compareTo(Cell o) {
         return value - o.value;
     }
+
 }
 

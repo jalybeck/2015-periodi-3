@@ -1,10 +1,9 @@
 package fi.explorator;
 
-import java.io.PrintStream;
-
 import java.io.UnsupportedEncodingException;
 
-import java.util.ArrayList;
+import fi.explorator.datastructures.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,5 +184,6 @@ public class Grid {
         for (Edge e : c.getEdges()) {
             System.out.println((i++) + ": " + e);
         }
+    
     }
 }

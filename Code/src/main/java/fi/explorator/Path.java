@@ -1,6 +1,7 @@
 package fi.explorator;
 
-import java.util.ArrayList;
+import fi.explorator.datastructures.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,5 +44,9 @@ public class Path {
         }
 
         return sb.toString();
+    }
+    
+    public int length() {
+        return this.path.size();
     }
 }

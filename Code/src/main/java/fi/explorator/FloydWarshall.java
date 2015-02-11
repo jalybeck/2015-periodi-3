@@ -55,8 +55,8 @@ class FloydWarshall extends PathFinder {
             Cell end = e.getCellEnd();
             if(start.getValue() == blockedWeight || end.getValue() == blockedWeight)
                 continue;
-            D[start.getOrderNumber()][end.getOrderNumber()] = e.getWeight();
-            D[end.getOrderNumber()][start.getOrderNumber()] = e.getWeight();
+            D[start.getOrderNumber()][end.getOrderNumber()] = start.getValue();
+            D[end.getOrderNumber()][start.getOrderNumber()] = end.getValue();
         }
         
         for (int k = 0; k < this.numVertices; k++) {
@@ -70,11 +70,6 @@ class FloydWarshall extends PathFinder {
             }
         }
         pathFound = true;
-    }
-
-    @Override
-    public boolean pathFound() {
-        return pathFound;
     }
 
     /**
@@ -134,8 +129,4 @@ class FloydWarshall extends PathFinder {
         System.out.println(pf.getPath());
     }
 
-    @Override
-    public void resetPathFound() {
-        this.pathFound = false;
-    }
 }
