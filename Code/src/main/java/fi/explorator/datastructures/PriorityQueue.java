@@ -5,12 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
-public class PriorityQueue<HeapNode> implements Queue<HeapNode> {
+/**
+ * PriorityQueue implemented as heap.
+ * 
+ * NOTE: This is not working yet!!!!
+ * @param <HeapNode>
+ */
+public class PriorityQueue implements Queue<HeapNode> {
 
     private List<HeapNode> heap;
+    private int heapSize;
     
     public PriorityQueue() {
         heap = new ArrayList<HeapNode>(20);
+        heapSize = 0;
+
     }
     
     private int parent(int i) {
@@ -26,19 +35,21 @@ public class PriorityQueue<HeapNode> implements Queue<HeapNode> {
     }
     
     private void heapify(int i) {
+        
         int l = left(i);
         int r = right(i);
         int smallest = i;
-        if (l <= heapSize && heap[l].sortVal < heap[smallest].sortVal)
+
+        if (l <= heapSize && heap.get(l).getValue() < heap.get(smallest).getValue())
             smallest = l;
 
-        if (r <= heapSize && heap[r].sortVal < heap[smallest].sortVal)
+        if (r <= heapSize && heap.get(r).getValue() < heap.get(smallest).getValue())
             smallest = r;
 
         if (smallest != i) {
-            HeapNode tmp = heap[i];
-            heap[i] = heap[smallest];
-            heap[smallest] = tmp;
+            HeapNode tmp = heap.get(i);
+            heap.set(i, heap.get(smallest));
+            heap.set(smallest,tmp);
             heapify(smallest);
         }
     }

@@ -85,15 +85,18 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     }
 
     public ArrayList() {
-        this(DEFAULT_SIZE);
+        initialize(DEFAULT_SIZE);
     }
     
     public ArrayList(int size) {
         super();
-        arr = (E[]) new Object[size];
-        currentSize = 0;
+        initialize(size);
     }
     
+    private void initialize(int size) {
+        arr = (E[]) new Object[size];
+        currentSize = 0;  
+    }
     @Override
     public int size() {
         return currentSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : currentSize;
