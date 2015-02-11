@@ -1,14 +1,17 @@
 import fi.explorator.*;
 
+
 int GRID_SIZE = 20;
 final int BLOCKED_WEIGHT = 100;
 final int PASSABLE_WEIGHT = 1;
 
 Grid grid;
 Cell start,goal;
-PathFinder pf_fw,pf_di, pf;
+PathFinder pf_fw,pf_di,pf_astar,pf;
 Path path;
 Tuple2 mC;
+
+boolean reportPathFound;
 
 Tuple2 gridCoord(Tuple2 t) {
   t.a /= GRID_SIZE;
@@ -21,7 +24,7 @@ Tuple2 gridCoord(int x, int y) {
 }
 
 void setup() {
-  size(640,360);
+  size(1280,720); //640,360
   frameRate(30);
   mC    = new Tuple2();
   println(height/GRID_SIZE+","+width/GRID_SIZE);
@@ -29,8 +32,12 @@ void setup() {
   pf_fw = PathFinder.createPathFinder(PathFinderType.FLOYD_WARSHALL, grid, start, goal);
   pf_fw.setBlockedWeight(BLOCKED_WEIGHT);
   pf_di = PathFinder.createPathFinder(PathFinderType.DIJKSTRA, grid, start, goal);
-  pf_di.setBlockedWeight(BLOCKED_WEIGHT);  
-  pf = pf_fw;
+  pf_di.setBlockedWeight(BLOCKED_WEIGHT);
+  pf_astar = PathFinder.createPathFinder(PathFinderType.A_STAR, grid, start, goal);
+  pf_astar.setBlockedWeight(BLOCKED_WEIGHT);  
+  pf = pf_di;
+  
+  frame.setTitle("Explorator - Dijkstra");
   
 }
 
@@ -69,20 +76,42 @@ void keyPressed() {
   if(key == 'a') {
     Tuple2 gCoord = gridCoord(mouseX,mouseY);
     start = grid.getCell(gCoord.b, gCoord.a);
+    pf_fw.setStart(start);    
     pf_di.setStart(start);
-    pf_fw.setStart(start);
+    pf_di.resetPathFound();
+    pf_astar.setStart(start);
+    pf_astar.resetPathFound();
+    reportPathFound = true;
     
   } else if(key == 'l') {
     Tuple2 gCoord = gridCoord(mouseX,mouseY);
     goal = grid.getCell(gCoord.b, gCoord.a);
-    pf_di.setGoal(goal);
     pf_fw.setGoal(goal);
+    pf_di.setGoal(goal);
+    pf_di.resetPathFound();
+    pf_astar.setGoal(goal);
+    pf_astar.resetPathFound();
+    reportPathFound = true;
   }
   
-  if(key == 'd')
-    pf = pf_di;
-  else if(key == 'f')
+  if(key == '1') {
     pf = pf_fw;
+    println("Floyd-Warshall");
+    frame.setTitle("Explorator - Floyd-Warshall");
+    reportPathFound = true;
+  }    
+  else if(key == '2') {
+    pf = pf_di;
+    println("Dijkstra");
+    frame.setTitle("Explorator - Dijkstra");
+    reportPathFound = true;
+  }
+  else if(key == '3') {
+    pf = pf_astar;
+    println("A*");
+    frame.setTitle("Explorator - A*");
+    reportPathFound = true;
+  }
 }
 
 void processMouseInputs() {
@@ -96,15 +125,29 @@ void processMouseInputs() {
                    grid.getCell(mC.b,mC.a).setValue(BLOCKED_WEIGHT);
                    pf_fw.resetPathFound();
                    pf_di.resetPathFound();  
+                   pf_astar.resetPathFound();
+            if(start != null && mC.a == start.getX() && mC.b == start.getY()) {
+              start = null;
+              path = null;
+            }
+            if(goal != null && mC.a == goal.getX() && mC.b == goal.getY()) {
+              path = null;
+              goal = null;
+            }              
            }
            if(mouseButton == RIGHT) {
              grid.getCell(mC.b,mC.a).setValue(PASSABLE_WEIGHT);
              pf_fw.resetPathFound();
-             pf_di.resetPathFound();  
-            if(start != null && mC.a == start.getX() && mC.b == start.getY())
+             pf_di.resetPathFound();
+             pf_astar.resetPathFound();
+            if(start != null && mC.a == start.getX() && mC.b == start.getY()) {
               start = null;
-            if(goal != null && mC.a == goal.getX() && mC.b == goal.getY())
+              path = null;
+            }
+            if(goal != null && mC.a == goal.getX() && mC.b == goal.getY()) {
               goal = null;
+              path = null;
+            }
            }
        }
    }
@@ -116,8 +159,15 @@ void draw() {
     if(start != null && goal != null) {
       while (!pf.pathFound()) {
           pf.findPathStep();
+          reportPathFound = true;
       }
-      path = pf.getPath();
+      if(pf.pathFound() && reportPathFound) {
+        path = pf.getPath();
+        if(path != null) {
+          println("path length: "+path.length());
+        }
+        reportPathFound = false;
+      }
     }
     drawGrid();
 
