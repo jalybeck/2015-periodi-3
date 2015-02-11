@@ -1,8 +1,9 @@
 a - add starting point
 l - add goal point
 
-d - dijkstra's algorithm
-f - floyd-warshall
+1 - floyd-warshall       (BEWARE: this is slow!!)
+2 - dijkstra's algorithm (this is default algorithm at the start of the program)
+3 - A*
 
 left mouse button - add blocked cell
 right mouse button - remove blocked cell
