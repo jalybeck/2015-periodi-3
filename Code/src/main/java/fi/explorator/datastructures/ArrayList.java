@@ -19,6 +19,10 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     private E arr[];
     private int currentSize;
     
+    /**
+     * Private class used to return iterator to ArrayList
+     * @param <T> type template
+     */
     private class ArrayListIterator<T> implements ListIterator<T> {
         
         private int currentIndex;

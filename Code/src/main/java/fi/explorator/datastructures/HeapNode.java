@@ -1,5 +1,10 @@
 package fi.explorator.datastructures;
 
+/**
+ * HeapNode to be used with PriorityQueue class.
+ * int value is used for comparison inside PriorityQueue.
+ * @param <E>
+ */
 public class HeapNode<E> {
     
     private int value;

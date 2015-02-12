@@ -148,10 +148,14 @@
       </list>
    </hash>
    <hash n="oracle.jdeveloper.javadoc.JProjectJavadoc">
-      <value n="generateAuthor" v="true"/>
-      <value n="generateVersion" v="true"/>
+      <value n="generateAuthor" v="false"/>
+      <value n="generateDeprecated" v="false"/>
+      <value n="generateNavbar" v="false"/>
+      <value n="generateSince" v="false"/>
+      <value n="generateTree" v="false"/>
+      <value n="generateVersion" v="false"/>
       <url n="outputDirectory" path="../../../../Documents/JavaDoc/"/>
-      <value n="scope" v="-private"/>
+      <value n="scope" v="-protected"/>
    </hash>
    <hash n="oracle.jdeveloper.model.J2eeSettings">
       <hash n="webContentSet">

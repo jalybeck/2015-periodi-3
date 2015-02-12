@@ -8,7 +8,6 @@ import java.util.Queue;
 /**
  * PriorityQueue implemented as heap.
  * 
- * NOTE: This is not working yet!!!!
  * @param <HeapNode>
  */
 public class PriorityQueue<T> implements Queue {
