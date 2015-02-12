@@ -2,16 +2,19 @@ package fi.explorator;
 
 import fi.explorator.datastructures.ArrayList;
 
+import fi.explorator.datastructures.HeapNode;
+import fi.explorator.datastructures.PriorityQueue;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
+//import java.util.PriorityQueue;
 /**
  * A* pathfinding algorithm implementation.
  * 
  * This implementation uses PriorityQueue for open set and 
- * HashMap for closed set.
+ * ArrayList for closed set.
  * 
  */
 public class AStar extends PathFinder {
@@ -19,10 +22,7 @@ public class AStar extends PathFinder {
      * Keeps track of cost of the path.
      */
     private int cost[];  
-    /**
-     * Keeps track of total cost of path including heuristics
-     */
-    private int totCost[]; 
+ 
     /**
      * This holds the path from start to goal
      */
@@ -38,70 +38,46 @@ public class AStar extends PathFinder {
     public void findPathStep() {
         if(goal == null || start == null)
             return;
-        PriorityQueue<Cell> open = new PriorityQueue<Cell>();
-        //List<Cell> open = new ArrayList<Cell>();
+        System.out.println("start.getValue(): "+start.getValue());
+        if(goal.getValue() == blockedWeight || start.getValue() == blockedWeight) {
+            pathFound = true;
+            return;
+        }
         
-        List<Integer> openList = new ArrayList<Integer>();
+        PriorityQueue<Cell> open = new PriorityQueue<Cell>();
         List<Integer> closed = new ArrayList<Integer>();
         
-        cost = new int[this.numVertices];
-        totCost = new int[this.numVertices];        
+        cost = new int[this.numVertices];     
         path = new int[this.numVertices];
         
         cost[start.getOrderNumber()] = 0;
-        totCost[start.getOrderNumber()] = heuristicFunction(start);
         path[start.getOrderNumber()] = start.getOrderNumber();
         
         Cell startCopy = new Cell(start);
-        startCopy.setValue(totCost[start.getOrderNumber()]);
-        open.add(startCopy);
-        openList.add(startCopy.getOrderNumber());
+        open.add(new HeapNode<Cell>(cost[start.getOrderNumber()],startCopy));
         
         while(!open.isEmpty()) {
-            Cell current = open.remove();
+            HeapNode<Cell> current = open.poll();
 
-            closed.add(current.getOrderNumber());
-
-            if(current.getOrderNumber() == goal.getOrderNumber()) {
-                pathFound = true;
-                return;
+            if(current.getPayload().getOrderNumber() == goal.getOrderNumber()) {
+                break;
             }
+            closed.add(current.getPayload().getOrderNumber());
             
-            List<Cell> adj = getAdjacentCells(grid.getCell(current.getOrderNumber()));
+            List<Cell> adj = getAdjacentCells(grid.getCell(current.getPayload().getOrderNumber()));
             for (Cell c : adj) {
-                if(isInList(closed,c.getOrderNumber()))
-                    continue;
-                
-                int newCost = cost[current.getOrderNumber()] + c.getValue();
-                boolean inOpenList = isInList(openList,c.getOrderNumber());
-                if(!inOpenList || newCost < cost[c.getOrderNumber()]) {
-                    path[c.getOrderNumber()] = current.getOrderNumber();
+                int newCost = cost[current.getPayload().getOrderNumber()] + c.getValue();
+                if(!open.contains(c.getOrderNumber()) || newCost < cost[c.getOrderNumber()]) {
+                    path[c.getOrderNumber()] = current.getPayload().getOrderNumber();
                     cost[c.getOrderNumber()] = newCost;
-                    totCost[c.getOrderNumber()] = cost[c.getOrderNumber()] + heuristicFunction(c);
-                    
-                    if(!inOpenList) {
-                        Cell cellCopy = new Cell(c);
-                        cellCopy.setValue(totCost[c.getOrderNumber()]);
-                        open.add(cellCopy);
-                        openList.add(cellCopy.getOrderNumber());
-                        //Collections.sort(open);
-                    }
+                    int fCost = newCost + heuristicFunction(c);
+                    open.add(new HeapNode<Cell>(fCost,c));
                 }
             }
         }
         
         //Eventho path might not actually be found, we stop iterating in main loop.
         pathFound = true;
-    }
-    
-    private boolean isInList(List<Integer> list, int orderNumber) {
-        for(Integer i : list) {
-            if(i == orderNumber) {
-                return true;
-            }
-        }
-        
-        return false;
     }
     
     /**
@@ -111,7 +87,7 @@ public class AStar extends PathFinder {
      */
     @Override
     public Path getPath() {
-        if (start == null || goal == null)
+        if (start == null || goal == null || goal.getValue() == blockedWeight || start.getValue() == blockedWeight)
             return null;
         if (path[goal.getOrderNumber()] == MAX_NUM || path[goal.getOrderNumber()] == 0)
             return null;
@@ -142,6 +118,6 @@ public class AStar extends PathFinder {
     private int heuristicFunction(Cell c) {
         int dx = Math.abs(c.getX() - goal.getX());
         int dy = Math.abs(c.getY() - goal.getY());
-        return 1 * (dx + dy);
+        return (dx + dy);
     }
 }

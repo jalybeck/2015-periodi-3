@@ -54,7 +54,7 @@ public class Dijkstra extends PathFinder {
             List<Cell> adj = getAdjacentCells(grid.getCell(next));
             for (Cell c : adj) {
                 int n = c.getOrderNumber();
-                int d = dist[next] + c.getValue();
+                int d = dist[next] + (int)c.getValue();
                 if (dist[n] > d) {
                     dist[n] = d;
                     path[n] = next;

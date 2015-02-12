@@ -11,13 +11,13 @@ import java.util.Queue;
  * NOTE: This is not working yet!!!!
  * @param <HeapNode>
  */
-public class PriorityQueue implements Queue<HeapNode> {
+public class PriorityQueue<T> implements Queue {
 
-    private List<HeapNode> heap;
+    private List<HeapNode<T>> heap;
     private int heapSize;
     
     public PriorityQueue() {
-        heap = new ArrayList<HeapNode>(20);
+        heap = new ArrayList<HeapNode<T>>(20, true);
         heapSize = 0;
 
     }
@@ -47,7 +47,7 @@ public class PriorityQueue implements Queue<HeapNode> {
             smallest = r;
 
         if (smallest != i) {
-            HeapNode tmp = heap.get(i);
+            HeapNode<T> tmp = heap.get(i);
             heap.set(i, heap.get(smallest));
             heap.set(smallest,tmp);
             heapify(smallest);
@@ -55,7 +55,7 @@ public class PriorityQueue implements Queue<HeapNode> {
     }
     
     @Override
-    public boolean add(HeapNode e) {
+    public boolean add(Object e) {
         boolean ok = offer(e);
         if(!ok)
             throw new IllegalStateException("Can't add! No more space left on priorityqueue!");
@@ -63,47 +63,66 @@ public class PriorityQueue implements Queue<HeapNode> {
     }
 
     @Override
-    public boolean offer(HeapNode e) {
-        return false;
+    public boolean offer(Object e) {
+        heapSize++;
+        
+        //Expand arraylist by adding null object.
+        if(heapSize == heap.size()) {
+            heap.add(null);
+        }
+        
+        int i = heapSize;
+        while(i > 1 && heap.get(parent(i)).getValue() > ((HeapNode)e).getValue()) {
+            heap.set(i,heap.get(parent(i)));
+            i = parent(i);
+        }
+        
+        heap.set(i,(HeapNode<T>)e);
+        return true;
     }
 
     @Override
-    public HeapNode remove() {
-        return null;
+    public HeapNode<T> remove() {
+        return poll();
     }
 
     @Override
-    public HeapNode poll() {
-        return null;
+    public HeapNode<T> poll() {        
+        HeapNode<T> min = heap.get(1);
+        heap.set(1,heap.get(heapSize));
+        heapSize--;
+        heapify(1);
+        return min;
     }
 
-    @Override
-    public HeapNode element() {
-        return null;
-    }
-
-    @Override
-    public HeapNode peek() {
-        return null;
-    }
-
+   
     @Override
     public int size() {
-        return 0;
+        return heapSize;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        if (heapSize > 0)
+            return false;
+
+        return true;
     }
 
     @Override
     public boolean contains(Object o) {
+        if(o != null) {
+            int ordNum = (Integer) o;
+            for(HeapNode<T> n : heap) {
+                if(n != null && n.getValue() == ordNum)
+                    return true;
+            }
+        }
         return false;
     }
 
     @Override
-    public Iterator<HeapNode> iterator() {
+    public Iterator<HeapNode<T>> iterator() {
         return null;
     }
 
@@ -123,26 +142,36 @@ public class PriorityQueue implements Queue<HeapNode> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends HeapNode> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
     public void clear() {
+    }
+
+    @Override
+    public boolean retainAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public boolean containsAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public HeapNode<T> element() {
+        return null;
+    }
+
+    @Override
+    public HeapNode<T> peek() {
+        return null;
     }
 }

@@ -19,7 +19,24 @@ public class ArrayListTest {
     @After
     public void tearDown() throws Exception {
     }
-
+    
+    
+    /**
+     * @see ArrayList#contains(Object)
+     */
+    @Test
+    public void testContains() {
+        List<String> aList = new ArrayList<String>();
+        int numStrings = 100;
+        for(int i=0;i<numStrings;i++) {
+            aList.add("Test"+i);
+        }
+        
+        assertTrue("List does not contain string Test59!",aList.contains("Test59"));
+        assertTrue("List does not contain string Test99!",aList.contains("Test99"));
+        
+        assertFalse("List should not contain string Test200!",aList.contains("Test200"));
+    }
     /**
      * @see ArrayList#add(E)
      */
@@ -73,14 +90,6 @@ public class ArrayListTest {
     }
 
     /**
-     * @see ArrayList#clear()
-     */
-    @Test
-    public void testClear() {
-        fail("Unimplemented");
-    }
-
-    /**
      * @see ArrayList#get(int)
      */
     @Test
@@ -98,7 +107,7 @@ public class ArrayListTest {
      * @see ArrayList#remove(int)
      */
     @Test
-    public void testRemove() {
+    public void testSortAndRemove() {
         List<Integer> l = new ArrayList<Integer>();
         
         for(int i=0;i<20;i++) {

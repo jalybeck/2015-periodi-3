@@ -77,8 +77,8 @@ public class Cell implements Comparable<Cell> {
      */
     public void setValue(int value) {
         this.value = value;
-        for(Edge e : edgeList)
-            e.setWeight(value);
+       // for(Edge e : edgeList)
+       //     e.setWeight(value);
     }
 
     /**
@@ -121,7 +121,7 @@ public class Cell implements Comparable<Cell> {
      */
     @Override
     public int compareTo(Cell o) {
-        return value - o.value;
+        return (int)(value - o.value);
     }
 
 }

@@ -85,17 +85,32 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     }
 
     public ArrayList() {
-        initialize(DEFAULT_SIZE);
+        initialize(DEFAULT_SIZE, false);
     }
     
     public ArrayList(int size) {
         super();
-        initialize(size);
+        initialize(size, false);
+    }
+   /**
+     * Constructor to create ArrayList with size.
+     * If expandToSize is true lists currentsize will be set to size,
+     * so set method can be used for the empty list.
+     * 
+     * @param size
+     * @param expandToSize
+     */
+    public ArrayList(int size, boolean expandToSize) {
+        super();
+        initialize(size, expandToSize);        
     }
     
-    private void initialize(int size) {
+    private void initialize(int size, boolean expandToSize) {
         arr = (E[]) new Object[size];
-        currentSize = 0;  
+        if(expandToSize)
+            currentSize = size;
+        else
+            currentSize = 0;  
     }
     @Override
     public int size() {
@@ -268,8 +283,10 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     }
     
     private boolean checkIndex(int index) throws ArrayIndexOutOfBoundsException {
-        if(index < 0 || index >=currentSize) {
-            throw new ArrayIndexOutOfBoundsException();
+        if(index < 0) {
+            throw new ArrayIndexOutOfBoundsException("index < 0, index = "+index);
+        } else if(index >=currentSize) {
+            throw new ArrayIndexOutOfBoundsException("index >= "+currentSize+" index = "+index);
         }
         return true;
     }
