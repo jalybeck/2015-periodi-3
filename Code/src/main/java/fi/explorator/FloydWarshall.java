@@ -92,7 +92,7 @@ class FloydWarshall extends PathFinder {
             u = path[u][v];
             p.add(grid.getCell(u));
         }
-
+        
         return p;
     }
 

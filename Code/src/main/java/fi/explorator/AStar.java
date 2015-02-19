@@ -94,8 +94,8 @@ public class AStar extends PathFinder {
         int u = start.getOrderNumber();
         int v = goal.getOrderNumber();
         while (u != v) {
-            v = path[v];
             p.add(grid.getCell(v));
+            v = path[v];
         }
 
         return p;

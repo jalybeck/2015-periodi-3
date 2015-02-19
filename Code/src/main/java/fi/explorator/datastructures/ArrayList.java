@@ -21,6 +21,7 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
 
     /**
      * Private class used to return iterator to ArrayList
+     * 
      * @param <T> type template
      */
     private class ArrayListIterator<T> implements ListIterator<T> {

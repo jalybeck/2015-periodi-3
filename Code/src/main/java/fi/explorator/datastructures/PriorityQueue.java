@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * PriorityQueue implemented as minheap implements java Queue.
+ * PriorityQueue implemented as minheap.
+ * Implements java Queue.
  *
  * Only methods used in this project are implemented.
  *
