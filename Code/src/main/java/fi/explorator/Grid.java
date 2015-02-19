@@ -12,7 +12,7 @@ import java.util.Map;
  * 2D grid which represents the area where the starting point and ending point of the path resides.
  * Grid cells are being numbered starting from zero at top-left corner and raising up by one when going right.
  * This number is being used to identify the cell in the grid.
- * 
+ *
  * This is the main composite object which holds the Cell and Edge instances.
  * This works as data transfer object between visualization layer and path finding algorithms.
  */
@@ -21,13 +21,10 @@ public class Grid {
     private Cell[][] g;
     private List<Edge> edgeList;
 
-    private Map<Integer, Cell> cellCache;
-
     public Grid(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         this.edgeList = new ArrayList<Edge>();
-        this.cellCache = new HashMap<Integer, Cell>();
         this.g = new Cell[rows][cols];
 
         //Construct grid and edgelist
@@ -38,7 +35,6 @@ public class Grid {
             for (int x = 0; x < cols; x++) {
                 int orderNumber = x + y * cols;
                 g[y][x] = new Cell(y, x, orderNumber);
-                cellCache.put(orderNumber, g[y][x]);
                 if (prevCell1 != null) {
                     Edge e = new Edge(prevCell1, g[y][x], 1);
                     edgeList.add(e);
@@ -84,12 +80,21 @@ public class Grid {
     }
 
     /**
-     * Get the cell represented by its orderNumber
+     * Get the cell represented by its orderNumber.
+     * Returns null if there is no cell with given orderNumber.
      * @param orderNumber number of the cell
      * @return Cell object
      */
     public Cell getCell(int orderNumber) {
-        return cellCache.get(orderNumber);
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                Cell c = g[y][x];
+                if (c.getOrderNumber() == orderNumber)
+                    return c;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -184,6 +189,6 @@ public class Grid {
         for (Edge e : c.getEdges()) {
             System.out.println((i++) + ": " + e);
         }
-    
+
     }
 }

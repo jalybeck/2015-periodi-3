@@ -22,7 +22,7 @@ class FloydWarshall extends PathFinder {
     @Override
     public void setGrid(Grid g) {
         super.setGrid(g);
-        
+
         D = new int[this.numVertices][this.numVertices];
         path = new int[this.numVertices][this.numVertices];
 
@@ -37,7 +37,7 @@ class FloydWarshall extends PathFinder {
      */
     @Override
     public void findPathStep() {
-        
+
         //Initialize weight matrix
         for (int i = 0; i < this.numVertices; i++) {
             for (int j = 0; j < this.numVertices; j++) {
@@ -53,12 +53,12 @@ class FloydWarshall extends PathFinder {
         for (Edge e : grid.getEdges()) {
             Cell start = e.getCellStart();
             Cell end = e.getCellEnd();
-            if(start.getValue() == blockedWeight || end.getValue() == blockedWeight)
+            if (start.getValue() == blockedWeight || end.getValue() == blockedWeight)
                 continue;
             D[start.getOrderNumber()][end.getOrderNumber()] = (int)start.getValue();
             D[end.getOrderNumber()][start.getOrderNumber()] = (int)end.getValue();
         }
-        
+
         for (int k = 0; k < this.numVertices; k++) {
             for (int i = 0; i < this.numVertices; i++) {
                 for (int j = 0; j < this.numVertices; j++) {
@@ -79,7 +79,7 @@ class FloydWarshall extends PathFinder {
      */
     @Override
     public Path getPath() {
-        if(start == null || goal == null)
+        if (start == null || goal == null)
             return null;
         if (path[start.getOrderNumber()][goal.getOrderNumber()] == MAX_NUM)
             return null;
@@ -116,7 +116,7 @@ class FloydWarshall extends PathFinder {
     public static void main(String[] args) throws InterruptedException {
         Grid grid = new Grid(4, 4);
         Cell start = new Cell(0, 0, 0);
-        Cell goal = new Cell(2, 1, 1+2 *grid.getNumColumns() );
+        Cell goal = new Cell(2, 1, 1 + 2 * grid.getNumColumns());
         PathFinder pf = PathFinder.createPathFinder(PathFinderType.FLOYD_WARSHALL, grid, start, goal);
         ((FloydWarshall)pf).printWeightMatrix();
         System.out.println();
@@ -124,8 +124,8 @@ class FloydWarshall extends PathFinder {
             pf.findPathStep();
         }
         ((FloydWarshall)pf).printWeightMatrix();
-        
-        System.out.println("Path from "+start+" to "+goal+":");
+
+        System.out.println("Path from " + start + " to " + goal + ":");
         System.out.println(pf.getPath());
     }
 

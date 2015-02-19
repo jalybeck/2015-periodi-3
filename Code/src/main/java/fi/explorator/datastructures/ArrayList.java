@@ -18,30 +18,30 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     private final int DEFAULT_SIZE = 10;
     private E arr[];
     private int currentSize;
-    
+
     /**
      * Private class used to return iterator to ArrayList
      * @param <T> type template
      */
     private class ArrayListIterator<T> implements ListIterator<T> {
-        
+
         private int currentIndex;
         private int previousIndex;
         private ArrayList<T> aList;
-        
+
         private ArrayListIterator(ArrayList<T> aList) {
             this.aList = aList;
             this.currentIndex = 0;
         }
-        
+
         @Override
         public boolean hasNext() {
             boolean next = currentIndex < aList.size();
-                      
-            if(!next) {
+
+            if (!next) {
                 this.aList = null;
             }
-                
+
             return next;
         }
 
@@ -80,7 +80,7 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
 
         @Override
         public void set(T e) {
-            aList.set(previousIndex,e);
+            aList.set(previousIndex, e);
         }
 
         @Override
@@ -91,31 +91,33 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     public ArrayList() {
         initialize(DEFAULT_SIZE, false);
     }
-    
+
     public ArrayList(int size) {
         super();
         initialize(size, false);
     }
-   /**
+
+    /**
      * Constructor to create ArrayList with size.
      * If expandToSize is true lists currentsize will be set to size,
      * so set method can be used for the empty list.
-     * 
+     *
      * @param size
      * @param expandToSize
      */
     public ArrayList(int size, boolean expandToSize) {
         super();
-        initialize(size, expandToSize);        
+        initialize(size, expandToSize);
     }
-    
+
     private void initialize(int size, boolean expandToSize) {
-        arr = (E[]) new Object[size];
-        if(expandToSize)
+        arr = (E[])new Object[size];
+        if (expandToSize)
             currentSize = size;
         else
-            currentSize = 0;  
+            currentSize = 0;
     }
+
     @Override
     public int size() {
         return currentSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : currentSize;
@@ -129,21 +131,21 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     /**
      * If underlying array grows larger than its current size,
      * it will be copied to new array and new arrays size is multiple of 2 of the old arrays size.
-     * 
+     *
      * @param e object to be added at the tail of the list
      * @return always true
      */
     @Override
     public boolean add(E e) {
-        if(currentSize == arr.length) {
+        if (currentSize == arr.length) {
             Object tmpArr[] = new Object[arr.length * 2];
-            for(int i = 0;i<arr.length;i++) {
+            for (int i = 0; i < arr.length; i++) {
                 tmpArr[i] = arr[i];
             }
-            
+
             arr = (E[])tmpArr;
         }
-        
+
         arr[currentSize++] = e;
 
         return true;
@@ -151,10 +153,10 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
 
     @Override
     public boolean contains(Object o) {
-        for(int i = 0;i<currentSize;i++) {
-            if(o == null && arr[i] == null)
+        for (int i = 0; i < currentSize; i++) {
+            if (o == null && arr[i] == null)
                 return true;
-            else if(o != null && o.equals(arr[i]))
+            else if (o != null && o.equals(arr[i]))
                 return true;
         }
         return false;
@@ -167,21 +169,21 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
 
     @Override
     public Object[] toArray() {
-        Object []newArr = new Object[currentSize];
-        
-        for(int i=0;i<currentSize;i++) {
+        Object[] newArr = new Object[currentSize];
+
+        for (int i = 0; i < currentSize; i++) {
             newArr[i] = arr[i];
         }
-        
+
         return newArr;
     }
 
     @Override
     public Object[] toArray(Object[] a) {
-        for(int i=0;i<currentSize;i++) {
+        for (int i = 0; i < currentSize; i++) {
             a[i] = arr[i];
         }
-        
+
         return a;
     }
 
@@ -197,15 +199,15 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     @Override
     public E remove(int index) {
         checkIndex(index);
-        
+
         E obj = arr[index];
-        
-        for(int i=index;i<currentSize - 1;i++) {
-            arr[i] = arr[i+1];
+
+        for (int i = index; i < currentSize - 1; i++) {
+            arr[i] = arr[i + 1];
         }
-        
+
         currentSize--;
-        
+
         return obj;
     }
 
@@ -236,8 +238,8 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
 
     @Override
     public void clear() {
-        
-        for(int i=0;i<currentSize;i++) {
+
+        for (int i = 0; i < currentSize; i++) {
             arr[i] = null;
         }
         currentSize = 0;
@@ -246,18 +248,18 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     @Override
     public E get(int index) {
         checkIndex(index);
-        
-        return (E)arr[index];        
+
+        return (E)arr[index];
     }
 
     @Override
     public E set(int index, E element) {
         checkIndex(index);
-        
+
         E obj = arr[index];
-        
+
         arr[index] = element;
-        
+
         return obj;
     }
 
@@ -285,12 +287,12 @@ public class ArrayList<E> implements List<E>, Iterable<E> {
     public List<E> subList(int fromIndex, int toIndex) {
         return Collections.emptyList();
     }
-    
+
     private boolean checkIndex(int index) throws ArrayIndexOutOfBoundsException {
-        if(index < 0) {
-            throw new ArrayIndexOutOfBoundsException("index < 0, index = "+index);
-        } else if(index >=currentSize) {
-            throw new ArrayIndexOutOfBoundsException("index >= "+currentSize+" index = "+index);
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException("index < 0, index = " + index);
+        } else if (index >= currentSize) {
+            throw new ArrayIndexOutOfBoundsException("index >= " + currentSize + " index = " + index);
         }
         return true;
     }

@@ -45,7 +45,7 @@ public class Path {
 
         return sb.toString();
     }
-    
+
     public int length() {
         return this.path.size();
     }

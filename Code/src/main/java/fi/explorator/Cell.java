@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class Cell implements Comparable<Cell> {
     private int x, y;
-    
+
     private List<Edge> edgeList;
-    
+
     /**
      * This is identifier of the cell.
      * Number 0 would be cell at left-top corner,
@@ -31,20 +31,20 @@ public class Cell implements Comparable<Cell> {
         this.edgeList = new ArrayList<Edge>();
         value = 1;
     }
-    
+
     /**
      * Copy construct.
-     * 
+     *
      * @param cell
      */
     public Cell(Cell cell) {
-       this.y = cell.y;
-       this.x = cell.x;
-       this.orderNumber = cell.orderNumber;
-       this.edgeList = cell.edgeList;
-       this.value = cell.value;
+        this.y = cell.y;
+        this.x = cell.x;
+        this.orderNumber = cell.orderNumber;
+        this.edgeList = cell.edgeList;
+        this.value = cell.value;
     }
-    
+
     /**
      * Get x-coordinate of the cell.
      * @return positive integer
@@ -66,7 +66,7 @@ public class Cell implements Comparable<Cell> {
      * @return String which consists y and x coordinates of the cell
      */
     public String toString() {
-        return "(" + y + "," + x + ","+orderNumber+")";
+        return "(" + y + "," + x + "," + orderNumber + ")";
     }
 
     /**
@@ -77,8 +77,8 @@ public class Cell implements Comparable<Cell> {
      */
     public void setValue(int value) {
         this.value = value;
-       // for(Edge e : edgeList)
-       //     e.setWeight(value);
+        // for(Edge e : edgeList)
+        //     e.setWeight(value);
     }
 
     /**
@@ -96,7 +96,7 @@ public class Cell implements Comparable<Cell> {
     public int getOrderNumber() {
         return this.orderNumber;
     }
-    
+
     /**
      * Add edge to current cell.
      * @param e Edge to be added
@@ -104,7 +104,7 @@ public class Cell implements Comparable<Cell> {
     public void addEdge(Edge e) {
         this.edgeList.add(e);
     }
-    
+
     /**
      * Get list of edges connected to current cell.
      * @return List of edges
@@ -112,7 +112,7 @@ public class Cell implements Comparable<Cell> {
     public List<Edge> getEdges() {
         return this.edgeList;
     }
-    
+
     /**
      * From Comparable interface.
      * This will be used to cell to cell compare operations.
@@ -121,7 +121,7 @@ public class Cell implements Comparable<Cell> {
      */
     @Override
     public int compareTo(Cell o) {
-        return (int)(value - o.value);
+        return (value - o.value);
     }
 
 }

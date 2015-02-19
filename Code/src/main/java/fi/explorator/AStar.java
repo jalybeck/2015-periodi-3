@@ -12,74 +12,71 @@ import java.util.Map;
 
 /**
  * A* pathfinding algorithm implementation.
- * 
- * This implementation uses PriorityQueue for open set and 
- * ArrayList for closed set.
- * 
+ *
+ * This implementation uses PriorityQueue for open set.
+ *
  */
 public class AStar extends PathFinder {
     /**
      * Keeps track of cost of the path.
      */
-    private int cost[];  
- 
+    private int cost[];
+
     /**
      * This holds the path from start to goal
      */
     private int path[];
-    
+
     @Override
     public void setGrid(Grid g) {
         super.setGrid(g);
 
     }
-    
+
     @Override
     public void findPathStep() {
-        if(goal == null || start == null)
+        if (goal == null || start == null)
             return;
-        System.out.println("start.getValue(): "+start.getValue());
-        if(goal.getValue() == blockedWeight || start.getValue() == blockedWeight) {
+
+        if (goal.getValue() == blockedWeight || start.getValue() == blockedWeight) {
             pathFound = true;
             return;
         }
-        
+
         PriorityQueue<Cell> open = new PriorityQueue<Cell>();
-        List<Integer> closed = new ArrayList<Integer>();
-        
-        cost = new int[this.numVertices];     
+
+        cost = new int[this.numVertices];
         path = new int[this.numVertices];
-        
+
         cost[start.getOrderNumber()] = 0;
         path[start.getOrderNumber()] = start.getOrderNumber();
-        
+
         Cell startCopy = new Cell(start);
-        open.add(new HeapNode<Cell>(cost[start.getOrderNumber()],startCopy));
-        
-        while(!open.isEmpty()) {
+        open.add(new HeapNode<Cell>(cost[start.getOrderNumber()], startCopy));
+
+        while (!open.isEmpty()) {
             HeapNode<Cell> current = open.poll();
 
-            if(current.getPayload().getOrderNumber() == goal.getOrderNumber()) {
+            if (current.getPayload().getOrderNumber() == goal.getOrderNumber()) {
                 break;
             }
-            closed.add(current.getPayload().getOrderNumber());
-            
+
             List<Cell> adj = getAdjacentCells(grid.getCell(current.getPayload().getOrderNumber()));
             for (Cell c : adj) {
                 int newCost = cost[current.getPayload().getOrderNumber()] + c.getValue();
-                if(!open.contains(c.getOrderNumber()) || newCost < cost[c.getOrderNumber()]) {
+                if (cost[c.getOrderNumber()] == 0 || newCost < cost[c.getOrderNumber()]) {
                     path[c.getOrderNumber()] = current.getPayload().getOrderNumber();
                     cost[c.getOrderNumber()] = newCost;
                     int fCost = newCost + heuristicFunction(c);
-                    open.add(new HeapNode<Cell>(fCost,c));
+                    open.add(new HeapNode<Cell>(fCost, c));
                 }
             }
         }
-        
+
         //Eventho path might not actually be found, we stop iterating in main loop.
         pathFound = true;
     }
-    
+
     /**
      * Construct Path object from start cell to goal cell, by iterating over path array, where
      * we gather path in findPathStep() method.
@@ -100,18 +97,18 @@ public class AStar extends PathFinder {
             v = path[v];
             p.add(grid.getCell(v));
         }
-        
+
         return p;
 
     }
-    
+
     /**
      * Heuristic function which depends on multiple factors.
      * For example how many directions you can move in a grid.
      * In this case we are moving only 4 directions.
-     * 
+     *
      * @link http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-     * 
+     *
      * @param c current cell which we are using in calculations against goal cells position
      * @return
      */

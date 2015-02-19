@@ -6,21 +6,23 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * PriorityQueue implemented as heap.
- * 
- * @param <HeapNode>
+ * PriorityQueue implemented as minheap implements java Queue.
+ *
+ * Only methods used in this project are implemented.
+ *
+ * @param <T>
  */
 public class PriorityQueue<T> implements Queue {
 
     private List<HeapNode<T>> heap;
     private int heapSize;
-    
+
     public PriorityQueue() {
         heap = new ArrayList<HeapNode<T>>(20, true);
         heapSize = 0;
 
     }
-    
+
     private int parent(int i) {
         return i / 2;
     }
@@ -32,9 +34,14 @@ public class PriorityQueue<T> implements Queue {
     private int right(int i) {
         return 2 * i + 1;
     }
-    
+
+    /**
+     * Maintains minimum heap rule starting from heap node i.
+     *
+     * @param i
+     */
     private void heapify(int i) {
-        
+
         int l = left(i);
         int r = right(i);
         int smallest = i;
@@ -48,15 +55,15 @@ public class PriorityQueue<T> implements Queue {
         if (smallest != i) {
             HeapNode<T> tmp = heap.get(i);
             heap.set(i, heap.get(smallest));
-            heap.set(smallest,tmp);
+            heap.set(smallest, tmp);
             heapify(smallest);
         }
     }
-    
+
     @Override
     public boolean add(Object e) {
         boolean ok = offer(e);
-        if(!ok)
+        if (!ok)
             throw new IllegalStateException("Can't add! No more space left on priorityqueue!");
         return true;
     }
@@ -64,19 +71,19 @@ public class PriorityQueue<T> implements Queue {
     @Override
     public boolean offer(Object e) {
         heapSize++;
-        
+
         //Expand arraylist by adding null object.
-        if(heapSize == heap.size()) {
+        if (heapSize == heap.size()) {
             heap.add(null);
         }
-        
+
         int i = heapSize;
-        while(i > 1 && heap.get(parent(i)).getValue() > ((HeapNode)e).getValue()) {
-            heap.set(i,heap.get(parent(i)));
+        while (i > 1 && heap.get(parent(i)).getValue() > ((HeapNode)e).getValue()) {
+            heap.set(i, heap.get(parent(i)));
             i = parent(i);
         }
-        
-        heap.set(i,(HeapNode<T>)e);
+
+        heap.set(i, (HeapNode<T>)e);
         return true;
     }
 
@@ -86,15 +93,15 @@ public class PriorityQueue<T> implements Queue {
     }
 
     @Override
-    public HeapNode<T> poll() {        
+    public HeapNode<T> poll() {
         HeapNode<T> min = heap.get(1);
-        heap.set(1,heap.get(heapSize));
+        heap.set(1, heap.get(heapSize));
         heapSize--;
         heapify(1);
         return min;
     }
 
-   
+
     @Override
     public int size() {
         return heapSize;
@@ -110,10 +117,10 @@ public class PriorityQueue<T> implements Queue {
 
     @Override
     public boolean contains(Object o) {
-        if(o != null) {
-            int ordNum = (Integer) o;
-            for(HeapNode<T> n : heap) {
-                if(n != null && n.getValue() == ordNum)
+        if (o != null) {
+            int ordNum = (Integer)o;
+            for (HeapNode<T> n : heap) {
+                if (n != null && n.getValue() == ordNum)
                     return true;
             }
         }

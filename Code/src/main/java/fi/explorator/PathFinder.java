@@ -24,8 +24,8 @@ public abstract class PathFinder {
     protected int blockedWeight;
     protected int numVertices;
     protected boolean pathFound;
-    
-    
+
+
     protected PathFinder() {
 
     }
@@ -161,7 +161,7 @@ public abstract class PathFinder {
     public int getPassableWeight() {
         return passableWeight;
     }
-    
+
     /**
      * Get adjacent cells of the given cell parameter.
      * Cells with value of blockedWeight will be not traversed.
@@ -172,7 +172,7 @@ public abstract class PathFinder {
         List<Cell> adj = new ArrayList<Cell>();
 
         for (Edge e : c.getEdges()) {
-            
+
             Cell cs = e.getCellStart();
             Cell ce = e.getCellEnd();
 
@@ -186,5 +186,5 @@ public abstract class PathFinder {
 
         return adj;
     }
-    
+
 }
