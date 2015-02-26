@@ -50,7 +50,7 @@ public class PerformanceTests {
         }        
     }
     
-    public void measureFloydWarshall() {
+    public float measureFloydWarshall() {
         float cumulativeTimeInSeconds = 0;
         
         pf = pf_fw;
@@ -80,9 +80,11 @@ public class PerformanceTests {
         }
         
         System.out.println(NUM_PATHS+" paths resolved using Floyd-Warshall in "+cumulativeTimeInSeconds+" secs.");
+        
+        return cumulativeTimeInSeconds;
     }
     
-    public void measureDijkstra() {
+    public float measureDijkstra() {
         float cumulativeTimeInSeconds = 0;
         
         pf = pf_di;
@@ -110,13 +112,15 @@ public class PerformanceTests {
             Path path = pf.getPath();
             //System.out.println(path);
             cumulativeTimeInSeconds += ((System.currentTimeMillis() - startTime) / 1000.0);
+            
+            
         }
         
         System.out.println(NUM_PATHS+" paths resolved using Dijkstra in "+cumulativeTimeInSeconds+" secs.");
-        
+        return cumulativeTimeInSeconds;
     }
     
-    public void measureAStar() {
+    public float measureAStar() {
         float cumulativeTimeInSeconds = 0;
         
         pf = pf_as;
@@ -148,17 +152,31 @@ public class PerformanceTests {
         
         System.out.println(NUM_PATHS+" paths resolved using A* in "+cumulativeTimeInSeconds+" secs.");
         
+        return cumulativeTimeInSeconds;
+        
     }
     
     public static void main(String[] args) {
         PerformanceTests perf = new PerformanceTests();
         System.out.println("Cells in grid: "+perf.TILES_X * perf.TILES_Y);
         int count = 1;
+        float floydWarshallSumTime = 0;
+        float dijkstraSumTime = 0;
+        float aStarSumTime = 0;
+        int numPathsProcessed = 0;
         while(count++ <= 10) {
             perf.NUM_PATHS = 100 * (count-1);
-            perf.measureFloydWarshall();
-            perf.measureDijkstra();
-            perf.measureAStar();
+            numPathsProcessed +=perf.NUM_PATHS;
+            floydWarshallSumTime += perf.measureFloydWarshall();
+            dijkstraSumTime += perf.measureDijkstra();
+            aStarSumTime += perf.measureAStar();
         }
+        
+        System.out.println();
+        
+        System.out.println("Processing time for "+numPathsProcessed+" paths:");
+        System.out.println("Floyd-Warshall: "+floydWarshallSumTime+" secs.");
+        System.out.println("Dijkstra: "+dijkstraSumTime+" secs.");
+        System.out.println("A*: "+aStarSumTime+" secs.");
     }
 }

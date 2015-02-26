@@ -60,7 +60,21 @@ public class Grid {
             }
         }
     }
-
+    
+    //Copy constructor
+    public Grid(Grid grid) {
+        this.rows = grid.rows;
+        this.cols = grid.cols;
+        this.edgeList = grid.edgeList; //Edges are same for grid
+        this.g = new Cell[rows][cols];
+        
+        for (int y = 0; y < rows; y++) {         
+            for (int x = 0; x < cols; x++) {         
+                g[y][x] = new Cell(grid.g[y][x]);
+            }
+        }
+    }
+    
     /**
      * Get list of edges in this Grid.
      * @return List of Edge objects
