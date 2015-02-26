@@ -5,5 +5,7 @@ l - add goal point
 2 - dijkstra's algorithm (this is default algorithm at the start of the program)
 3 - A*
 
+g - toggle game of life on/off
+
 left mouse button - add blocked cell
 right mouse button - remove blocked cell

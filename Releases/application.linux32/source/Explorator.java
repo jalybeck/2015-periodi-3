@@ -31,6 +31,8 @@ Tuple2 mC;
 
 boolean reportPathFound;
 
+boolean simulateLife;
+
 public Tuple2 gridCoord(Tuple2 t) {
   t.a /= GRID_SIZE;
   t.b /= GRID_SIZE;
@@ -129,11 +131,18 @@ public void keyPressed() {
     println("A*");
     frame.setTitle("Explorator - A*");
     reportPathFound = true;
+  } else if(key == 'g') {
+    simulateLife = !simulateLife;
+  } else if(key == 'c') {
+    for(Cell c : grid.getCells()) {
+      c.setValue(PASSABLE_WEIGHT);
+    }
   }
 }
 
 public void processMouseInputs() {
    if(mousePressed) {
+       simulateLife = false;
        mC = gridCoord(mouseX, mouseY);
        
        if( (mC.b >= 0 && mC.b < height / GRID_SIZE) &&
@@ -174,6 +183,11 @@ public void processMouseInputs() {
 public void draw() {
     background(255,255,255);
     processMouseInputs();
+    if(simulateLife)  {
+      iterateLife(grid);
+       pf_astar.resetPathFound();
+       pf_di.resetPathFound();
+    }
     if(start != null && goal != null) {
       while (!pf.pathFound()) {
           pf.findPathStep();
@@ -189,6 +203,68 @@ public void draw() {
     }
     drawGrid();
 
+}
+
+public Cell checkGetCell(int x, int y, Grid g) {
+  //if(y < 0 || x < 0 || x >= g.getNumColumns() || y >= g.getNumRows())
+  //  return null;
+    
+  if(x < 0) {
+    x = g.getNumColumns() - 1;
+  } else if(x >= g.getNumColumns()) {
+    x = 0;
+  }
+  
+  if(y < 0) {
+    y = g.getNumRows() - 1;
+  } else if(y >= g.getNumRows()) {
+    y = 0;
+  }
+  
+  return g.getCell(y,x);
+}
+
+
+public int checkActive(ArrayList<Cell> list) {
+    int numActive = 0;
+    for(Cell n : list) {
+      if(n == null) continue;
+      if(n.getValue() == BLOCKED_WEIGHT)
+        numActive++;
+    }
+  
+    return numActive;  
+}
+
+public void iterateLife(Grid grid) {
+  
+  Grid g = new Grid(grid);
+  
+  for(Cell c : g.getCells()) {
+    ArrayList<Cell> neighbours = new ArrayList<Cell>();
+    neighbours.add(checkGetCell(c.getX()-1,c.getY(),g));
+    neighbours.add(checkGetCell(c.getX()+1,c.getY(),g));
+    neighbours.add(checkGetCell(c.getX(),c.getY()-1,g));
+    neighbours.add(checkGetCell(c.getX(),c.getY()+1,g));
+    
+    neighbours.add(checkGetCell(c.getX()-1,c.getY()-1,g));
+    neighbours.add(checkGetCell(c.getX()+1,c.getY()-1,g));
+    neighbours.add(checkGetCell(c.getX()-1,c.getY()+1,g));
+    neighbours.add(checkGetCell(c.getX()+1,c.getY()+1,g));
+    
+    
+    int numActive = checkActive(neighbours);
+    
+    if(c.getValue() == BLOCKED_WEIGHT) {
+      if(numActive < 2 || numActive > 3)
+        grid.getCell(c.getY(),c.getX()).setValue(PASSABLE_WEIGHT);//c.setValue(PASSABLE_WEIGHT);
+      else if(numActive == 2 || numActive == 3)
+        grid.getCell(c.getY(),c.getX()).setValue(BLOCKED_WEIGHT);
+    } else if(c.getValue() == PASSABLE_WEIGHT) {
+      if(numActive == 3)
+        grid.getCell(c.getY(),c.getX()).setValue(BLOCKED_WEIGHT);
+    }
+  }
 }
 class Tuple2 {
   int a,b;

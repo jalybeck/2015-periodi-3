@@ -13,6 +13,8 @@ Tuple2 mC;
 
 boolean reportPathFound;
 
+boolean simulateLife;
+
 Tuple2 gridCoord(Tuple2 t) {
   t.a /= GRID_SIZE;
   t.b /= GRID_SIZE;
@@ -111,11 +113,18 @@ void keyPressed() {
     println("A*");
     frame.setTitle("Explorator - A*");
     reportPathFound = true;
+  } else if(key == 'g') {
+    simulateLife = !simulateLife;
+  } else if(key == 'c') {
+    for(Cell c : grid.getCells()) {
+      c.setValue(PASSABLE_WEIGHT);
+    }
   }
 }
 
 void processMouseInputs() {
    if(mousePressed) {
+       simulateLife = false;
        mC = gridCoord(mouseX, mouseY);
        
        if( (mC.b >= 0 && mC.b < height / GRID_SIZE) &&
@@ -156,6 +165,11 @@ void processMouseInputs() {
 void draw() {
     background(255,255,255);
     processMouseInputs();
+    if(simulateLife)  {
+      iterateLife(grid);
+       pf_astar.resetPathFound();
+       pf_di.resetPathFound();
+    }
     if(start != null && goal != null) {
       while (!pf.pathFound()) {
           pf.findPathStep();
